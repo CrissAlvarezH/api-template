@@ -23,7 +23,8 @@ def create_user(db: Session, obj_in: UserCreate) -> User:
     user = User(
         full_name=obj_in.full_name,
         email=obj_in.email,
-        password=get_password_hash(obj_in.password)
+        password=get_password_hash(obj_in.password),
+        is_active=True
     )
     db.add(user)
     db.commit()
