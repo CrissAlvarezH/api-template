@@ -2,6 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, HTTPException, status, Depends, Body, Security, Path
 from fastapi.security import OAuth2PasswordRequestForm
+from fastapi_pagination import Page, paginate
 
 from app.db.dependencies import get_db
 
@@ -46,11 +47,11 @@ async def register(db=Depends(get_db), user_in: schemas.UserCreate = Body()):
 
 @router.get(
     "/users",
-    response_model=List[schemas.UserRetrieve],
+    response_model=Page[schemas.UserRetrieve],
     dependencies=[Security(Auth, scopes=[LIST_USERS])],
 )
 async def user_list(db=Depends(get_db)):
-    return crud.list_users(db)
+    return paginate(crud.list_users(db))
 
 
 @router.put(
