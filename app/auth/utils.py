@@ -6,7 +6,7 @@ from jose import jwt
 
 from app.core.config import settings
 
-from app.auth import crud, schemas
+from app.auth import schemas
 
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -21,6 +21,7 @@ def get_password_hash(password: str):
 
 
 def authenticate_user(db, email: str, password: str):
+    from app.auth import crud
     user = crud.get_user_by_email(db, email)
     if not user:
         return False
