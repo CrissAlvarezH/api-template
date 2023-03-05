@@ -29,7 +29,6 @@ class UserRetrieve(BaseModel):
     full_name: str
     email: EmailStr
     scopes: List[str]
-    provider: str
     is_active: bool
 
     class Config:
