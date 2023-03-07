@@ -1,4 +1,5 @@
 import os
+import time
 from datetime import datetime
 
 import pytest
@@ -6,6 +7,7 @@ from fastapi.testclient import TestClient
 from pydantic.networks import PostgresDsn
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import OperationalError
 from sqlalchemy_utils import create_database, drop_database
 
 from app.core.config import settings
@@ -30,6 +32,7 @@ def db():
     )
 
     engine = create_engine(settings.PG_DNS)
+    wait_for_db(engine)
     create_database(engine.url)
 
     # create tables
@@ -50,3 +53,12 @@ def db():
 def client():
     with TestClient(app) as c:
         yield c
+
+
+def wait_for_db(engine):
+    deadline = time.time() + 10
+    while time.time() < deadline:
+        try:
+            return engine.connect()
+        except OperationalError:
+            time.sleep(0.5)
