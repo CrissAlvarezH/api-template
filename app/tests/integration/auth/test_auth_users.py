@@ -17,9 +17,6 @@ def test_authenticate_user(db):
     assert auth_user.full_name == user.full_name
     assert auth_user.email == user.email
 
-    db.delete(user)
-    db.commit()
-
 
 def test_create_access_token(db):
     user, _ = UserFactory.sample_user(db)
@@ -33,6 +30,3 @@ def test_create_access_token(db):
     assert decoded.get("user").get("id") == user.id
     assert decoded.get("user").get("full_name") == user.full_name
     assert decoded.get("user").get("email") == user.email
-
-    db.delete(user)
-    db.commit()

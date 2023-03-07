@@ -13,3 +13,6 @@ makemigrations:
 
 migrate:
 	alembic upgrade head
+
+tests:
+	pytest -o log_cli=true
