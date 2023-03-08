@@ -9,7 +9,7 @@ app = FastAPI()
 
 @app.get("/health-check")
 def health_check():
-    return Response({"status": "1"}, status_code=200)
+    return {"status": "okay"}
 
 
 app.include_router(api_router, prefix="/api/v1")
