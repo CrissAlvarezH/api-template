@@ -32,6 +32,7 @@ jobs:
       - name: Tests
         run: |
           source .venv/bin/activate
+          cp .env.example .env
           make tests
 
   build:
