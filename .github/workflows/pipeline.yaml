@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+
+  unit-tests:
+    runs-no: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Unit tests
+        run: |
+          make unit-tests
+
+  integration-tests:
+    runs-no: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Integration tests
+        run: |
+          make integration-tests
+
+  e2e-tests:
+    runs-no: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Integration tests
+        run: |
+          make e2e-tests
+
+  build:
+    needs:
+      - unit-tests
+      - integration-tests
+      - e2e-tests
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and push docker image
+        run: |
+          echo "${{secrets.DOCKER_PASSWORD}}" | docker login --username ${{secrets.DOCKER_USER}} --password-stdin
+          make publish
+
+  deploy:
+    needs:
+      - build
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - name: Trigger deploy on server
+        run: |
+          echo "${{secrets.AMAZON_SERVER_KEY}}" > server-key.pem
+          chmod 600 server-key.pem
+          make deploy user=${{secrets.SERVER_USER}} address=${{secrets.SERVER_ADDRESS}}

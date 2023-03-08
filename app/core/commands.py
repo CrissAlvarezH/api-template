@@ -1,4 +1,8 @@
+import time
+
 import click
+from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
 
 from app.auth.crud import (
     get_scope, create_scope, get_user_by_email, create_user,
@@ -7,7 +11,7 @@ from app.auth.crud import (
 from app.auth.schemas import UserCreate
 from app.auth.scopes import LIST_USERS, EDIT_USERS
 from app.core.config import settings
-from app.db.session import SessionLocal
+from app.db.session import create_session
 
 
 @click.group()
@@ -16,9 +20,28 @@ def cli():
 
 
 @cli.command()
+def wait_for_db_available():
+    engine = create_engine(settings.PG_DNS, pool_pre_ping=True)
+    deadline = time.time() + 10
+    success = False
+    while time.time() < deadline:
+        try:
+            engine.connect()
+            success = True
+            break
+        except OperationalError:
+            time.sleep(0.5)
+
+    if success:
+        click.echo("database available now")
+    else:
+        click.echo("ERROR: database is not available")
+
+
+@cli.command()
 def create_superuser():
     click.echo("\nINIT create superuser")
-    db = SessionLocal()
+    db = create_session()
 
     user_db = get_user_by_email(db, settings.SUPER_USER_EMAIL)
     if user_db is not None:
@@ -42,7 +65,7 @@ def create_superuser():
 
 @cli.command()
 def create_default_scopes():
-    db = SessionLocal()
+    db = create_session()
 
     default_scopes = [
         LIST_USERS,

@@ -12,7 +12,9 @@ services:
       - .env
 
   api:
-    build: .
+    image: crissalvarezh/api-template:latest
+    ports:
+      - "80:80"
     depends_on:
       - database
     environment:
