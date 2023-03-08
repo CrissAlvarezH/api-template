@@ -7,7 +7,7 @@ on:
 jobs:
 
   unit-tests:
-    runs-no: ubuntu-20.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Unit tests
@@ -15,7 +15,7 @@ jobs:
           make unit-tests
 
   integration-tests:
-    runs-no: ubuntu-20.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Integration tests
@@ -23,7 +23,7 @@ jobs:
           make integration-tests
 
   e2e-tests:
-    runs-no: ubuntu-20.04
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
       - name: Integration tests
