@@ -68,6 +68,12 @@ fi
 if [ $action = "dev" ]; then
   uvicorn app.main:app --reload
 
+elif [ $action = "setup" ]; then
+	docker-compose up -d database
+
+elif [ $action = "up" ]; then
+	docker-compose up -d api
+
 elif [ $action = "start" ]; then
   prestart
   uvicorn app.main:app --proxy-headers --host 0.0.0.0 --port 80

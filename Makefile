@@ -18,10 +18,10 @@ reload-service:
 	sh scripts.sh reload-service
 
 setup:
-	docker compose up -d database
+	sh scripts.sh setup
 
 up: setup
-	docker compose up -d api
+	sh scripts.sh up
 
 makemigrations:
 	alembic revision --autogenerate -m $(m)
